@@ -8,8 +8,6 @@ struct Tarea{
     int duracion; // entre 10 - 100
 }typedef tarea;
 
-void cargar();
-
 int main(){
 
     int cantidad;
@@ -17,14 +15,21 @@ int main(){
     printf("\ningrese cuantas tareas debe realizar: ");
     scang("%d",&cantidad);
 
-    tarea **puntero = (struct Tarea **) malloc(sizeof(struct Tarea *) * cantidad); //vector grande de punteros
+    tarea **tareaspendientes = (struct Tarea **) malloc(sizeof(struct Tarea *) * cantidad); //vector grande de punteros
+    tarea **tareasrealizadas = (struct Tarea **) malloc(sizeof(struct Tarea*) * cantidad);
 
     for (int i = 0; i < cantidad; i++)
     {
-        puntero[i] = NULL;
+        tareaspendientes[i] = NULL;
+        tareaspendientes[i]->tareaID = i;
+        printf("\ningrese una descripcion de la tarea: ");
+        scanf("%d",&tareaspendientes[i]->descripcion);
+        printf("\ningrese la duracion de la tarea: ");
+        scanf("%d",&tareaspendientes[i]->duracion);
     }
     
     
+
     
 
 
@@ -32,7 +37,3 @@ int main(){
     return 0;
 }
 
-void cargar()
-{
-
-}
