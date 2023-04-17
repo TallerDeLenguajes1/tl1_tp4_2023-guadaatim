@@ -64,10 +64,10 @@ int main(){
 
     for (int k = 0; k < j; k++)
     {
-        if (tareasrealizadas[k]!=NULL){
-        printf("\nTarea %d", tareasrealizadas[k]->tareaID);
-        printf("\nDescripcion: %s", tareasrealizadas[k]->descripcion);
-        printf("\nDuracion: %d", tareasrealizadas[k]->duracion);
+        if (tareasrealizadas[k] != NULL){
+            printf("\nTarea %d", tareasrealizadas[k]->tareaID);
+            printf("\nDescripcion: %s", tareasrealizadas[k]->descripcion);
+            printf("\nDuracion: %d", tareasrealizadas[k]->duracion);
         }
         else
         {
