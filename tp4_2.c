@@ -36,8 +36,7 @@ int main(){
         tareaspendientes[i]->descripcion = malloc(sizeof(char) * strlen(buff + 1));
         strcpy(tareaspendientes[i]->descripcion, buff);
         fflush(stdin);
-        printf("\ningrese la duracion de la tarea: ");
-        scanf("%d",&tareaspendientes[i]->duracion);
+        tareaspendientes[i]->duracion = 10 + rand() % 90;
     }
     
     int realizada, j = 0;
