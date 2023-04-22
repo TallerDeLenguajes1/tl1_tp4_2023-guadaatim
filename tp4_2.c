@@ -76,15 +76,12 @@ int main(){
         }
     }
 
-    char buff[10];
-    char *clave;
+    char clave[10];
     tarea *buscada;
 
     fflush(stdin);
     printf("\ningrese la palabra clave: ");
-    gets(buff);
-
-    clave = (char *)malloc(sizeof(char) * strlen(buff + 1));
+    gets(clave);
 
     buscada = buscarTarea2(tareaspendientes, clave, cantidad);
 
@@ -94,9 +91,10 @@ int main(){
         printf("\ntarea %d", buscada->tareaID);
         printf("\ndescripcion: %s", buscada->descripcion);
         printf("\nduracion: %d", buscada->duracion);
+    } else
+    {
+        printf("\nno se encontro la tarea");
     }
-    
-
     
     return 0;
 }
@@ -106,6 +104,8 @@ tarea * buscarTarea2(tarea **listatareas, char cadenaclave[], int cantidad)
     tarea **aux;
     tarea *encontrada = NULL;
     int i = 0;
+
+    aux = listatareas;
 
     while (i < cantidad)
     {
