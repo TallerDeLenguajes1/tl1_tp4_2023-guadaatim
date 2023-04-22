@@ -9,7 +9,7 @@ struct Tarea{
     int duracion; // entre 10 - 100
 }typedef tarea;
 
-tarea * buscarTarea(tarea **listatareas, int identificador, int cantidad);
+tarea * buscarTarea(tarea **listatareas, int identificador, int cantidad); //buscar por id
 
 int main(){
 
