@@ -9,6 +9,8 @@ struct Tarea{
     int duracion; // entre 10 - 100
 }typedef tarea;
 
+tarea * buscarTarea2(tarea **listatareas, char cadenaclave[], int cantidad); //buscar por palabra clave
+
 int main(){
 
     int cantidad;
@@ -73,7 +75,52 @@ int main(){
             break;
         }
     }
+
+    char buff[10];
+    char *clave;
+    tarea *buscada;
+
+    fflush(stdin);
+    printf("\ningrese la palabra clave: ");
+    gets(buff);
+
+    clave = (char *)malloc(sizeof(char) * strlen(buff + 1));
+
+    buscada = buscarTarea2(tareaspendientes, clave, cantidad);
+
+    if (buscada != NULL)
+    {
+        printf("\ntarea encontrada!!");
+        printf("\ntarea %d", buscada->tareaID);
+        printf("\ndescripcion: %s", buscada->descripcion);
+        printf("\nduracion: %d", buscada->duracion);
+    }
+    
+
     
     return 0;
 }
 
+tarea * buscarTarea2(tarea **listatareas, char cadenaclave[], int cantidad)
+{
+    tarea **aux;
+    tarea *encontrada = NULL;
+    int i = 0;
+
+    while (i < cantidad)
+    {
+        if (aux[i] != NULL)
+        {
+            if (strstr(aux[i]->descripcion, cadenaclave) != NULL)
+            {
+                encontrada = aux[i];
+                break;
+            }
+        }
+        
+        i++;
+    }
+    
+    return encontrada;
+
+}
