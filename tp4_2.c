@@ -27,7 +27,7 @@ int main(){
 
     for (int i = 0; i < cantidad; i++)
     {
-        tareaspendientes[i] = (struct Tarea *)malloc(sizeof(struct Tarea) * cantidad); //reserve memoria para la estructura
+        tareaspendientes[i] = (struct Tarea *)malloc(sizeof(struct Tarea) * cantidad); //reserva memoria para la estructura
         tareaspendientes[i]->tareaID = i; 
         fflush(stdin);
         printf("\ningrese una descripcion de la tarea: ");
@@ -37,7 +37,7 @@ int main(){
         strcpy(tareaspendientes[i]->descripcion, buff);
         fflush(stdin);
         printf("\ningrese la duracion de la tarea: ");
-        scanf("%d",&tareaspendientes[i]->duracion);
+        tareaspendientes[i]->duracion = 10 + rand() % 90;
     }
     
     int realizada, j = 0;
