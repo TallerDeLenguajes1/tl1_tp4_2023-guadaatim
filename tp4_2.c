@@ -9,7 +9,7 @@ struct Tarea{
     int duracion; // entre 10 - 100
 }typedef tarea;
 
-tarea * buscarTarea(tarea **listatareas, int identificador);
+tarea * buscarTarea(tarea **listatareas, int identificador, int cantidad);
 
 int main(){
 
@@ -79,7 +79,7 @@ int main(){
     int identificador = 1;
     tarea *buscada;
 
-    buscada = buscarTarea(tareaspendientes, identificador);
+    buscada = buscarTarea(tareaspendientes, identificador, cantidad);
 
     if (buscada != NULL)
     {
@@ -97,7 +97,7 @@ int main(){
     return 0;
 }
 
-tarea * buscarTarea(tarea **listatareas, int identificador)
+tarea * buscarTarea(tarea **listatareas, int identificador, int cantidad)
 {
     tarea **aux ;
     tarea *encontrada = NULL;
@@ -105,14 +105,17 @@ tarea * buscarTarea(tarea **listatareas, int identificador)
 
     aux = listatareas;
 
-    while (aux[i] != NULL)
+    while (i < cantidad)
     {
-        if (aux[i]->tareaID == identificador)
+        if (aux[i] != NULL)
         {
-            encontrada = aux[i];
-            break;
+            if (aux[i]->tareaID == identificador)
+            {
+                encontrada = aux[i];
+                break;
+            }
         }
-        
+          
         i++;
     }
     
