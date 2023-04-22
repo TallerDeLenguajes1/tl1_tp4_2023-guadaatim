@@ -9,6 +9,8 @@ struct Tarea{
     int duracion; // entre 10 - 100
 }typedef tarea;
 
+tarea * buscarTarea(tarea **listatareas, int identificador);
+
 int main(){
 
     int cantidad;
@@ -73,7 +75,46 @@ int main(){
             break;
         }
     }
+
+    int identificador = 1;
+    tarea *buscada;
+
+    buscada = buscarTarea(tareaspendientes, identificador);
+
+    if (buscada != NULL)
+    {
+        printf("\ntarea encontrada!!");
+        printf("\nid: %d", buscada->tareaID);
+        printf("\ndescripcion: %s", buscada->descripcion);
+        printf("\nduracion: %d", buscada->duracion);
+    } else
+    {
+        printf("\nno se encontro la tarea");
+    }
+    
+    
     
     return 0;
 }
 
+tarea * buscarTarea(tarea **listatareas, int identificador)
+{
+    tarea **aux ;
+    tarea *encontrada = NULL;
+    int i = 0;
+
+    aux = listatareas;
+
+    while (aux[i] != NULL)
+    {
+        if (aux[i]->tareaID == identificador)
+        {
+            encontrada = aux[i];
+            break;
+        }
+        
+        i++;
+    }
+    
+    return encontrada;
+}
