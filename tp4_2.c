@@ -9,7 +9,8 @@ struct Tarea{
     int duracion; // entre 10 - 100
 }typedef tarea;
 
-tarea * buscarTarea2(tarea **listatareas, char cadenaclave[], int cantidad); //buscar por palabra clave
+tarea * buscarTareaPorpalabra(tarea **listatareas, char cadenaclave[], int cantidad); //buscar por palabra clave
+tarea * buscarTareaPorID(tarea **listatareas, int identificador, int cantidad); //buscar por id
 
 int main(){
 
@@ -76,30 +77,51 @@ int main(){
         }
     }
 
+    //buscar por id
     char clave[10];
-    tarea *buscada;
+    tarea *buscadaid, *buscadapalabra;
 
-    fflush(stdin);
-    printf("\ningrese la palabra clave: ");
-    gets(clave);
+    int identificador = 1;
+    tarea *buscadaid;
 
-    buscada = buscarTarea2(tareaspendientes, clave, cantidad);
+    buscadaid = buscarTarea(tareaspendientes, identificador, cantidad);
 
-    if (buscada != NULL)
+    if (buscadaid != NULL)
     {
         printf("\ntarea encontrada!!");
-        printf("\ntarea %d", buscada->tareaID);
-        printf("\ndescripcion: %s", buscada->descripcion);
-        printf("\nduracion: %d", buscada->duracion);
+        printf("\nid: %d", buscadaid->tareaID);
+        printf("\ndescripcion: %s", buscadaid->descripcion);
+        printf("\nduracion: %d", buscadaid->duracion);
     } else
     {
         printf("\nno se encontro la tarea");
     }
     
+    //buscar por palabra clave
+    char clave[10];
+    tarea *buscadapalabra;
+
+    fflush(stdin);
+    printf("\ningrese la palabra clave: ");
+    gets(clave);
+
+    buscadapalabra = buscarTarea2(tareaspendientes, clave, cantidad);
+
+    if (buscadapalabra != NULL)
+    {
+        printf("\ntarea encontrada!!");
+        printf("\ntarea %d", buscadapalabra->tareaID);
+        printf("\ndescripcion: %s", buscadapalabra->descripcion);
+        printf("\nduracion: %d", buscadapalabra->duracion);
+    } else
+    {
+        printf("\nno se encontro la tarea");
+    }
+
     return 0;
 }
 
-tarea * buscarTarea2(tarea **listatareas, char cadenaclave[], int cantidad)
+tarea * buscarTareaPorpalabra(tarea **listatareas, char cadenaclave[], int cantidad)
 {
     tarea **aux;
     tarea *encontrada = NULL;
@@ -124,3 +146,30 @@ tarea * buscarTarea2(tarea **listatareas, char cadenaclave[], int cantidad)
     return encontrada;
 
 }
+
+
+tarea * buscarTareaPorID(tarea **listatareas, int identificador, int cantidad)
+{
+    tarea **aux ;
+    tarea *encontrada = NULL;
+    int i = 0;
+
+    aux = listatareas;
+
+    while (i < cantidad)
+    {
+        if (aux[i] != NULL)
+        {
+            if (aux[i]->tareaID == identificador)
+            {
+                encontrada = aux[i];
+                break;
+            }
+        }
+          
+        i++;
+    }
+    
+    return encontrada;
+}
+
