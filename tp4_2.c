@@ -77,47 +77,55 @@ int main(){
         }
     }
 
-    //buscar por id
-    char clave[10];
-    tarea *buscadaid, *buscadapalabra;
+    int opcion;
+    printf("\ndesea buscar una tarea con id o con una palabra clave? 1-id, 2-palabra clave");
+    scanf("%d",&opcion);
 
-    int identificador = 1;
-    tarea *buscadaid;
+    if (opcion == 1)
+    {    
+        //buscar por id
+        char clave[10];
+        tarea *buscadaid, *buscadapalabra;
 
-    buscadaid = buscarTarea(tareaspendientes, identificador, cantidad);
+        int identificador = 1;
+        tarea *buscadaid;
 
-    if (buscadaid != NULL)
-    {
-        printf("\ntarea encontrada!!");
-        printf("\nid: %d", buscadaid->tareaID);
-        printf("\ndescripcion: %s", buscadaid->descripcion);
-        printf("\nduracion: %d", buscadaid->duracion);
+        buscadaid = buscarTarea(tareaspendientes, identificador, cantidad);
+
+        if (buscadaid != NULL)
+        {
+            printf("\ntarea encontrada!!");
+            printf("\nid: %d", buscadaid->tareaID);
+            printf("\ndescripcion: %s", buscadaid->descripcion);
+            printf("\nduracion: %d", buscadaid->duracion);
+        } else
+        {
+            printf("\nno se encontro la tarea");
+        }
     } else
     {
-        printf("\nno se encontro la tarea");
+        //buscar por palabra clave
+        char clave[10];
+        tarea *buscadapalabra;
+
+        fflush(stdin);
+        printf("\ningrese la palabra clave: ");
+        gets(clave);
+
+        buscadapalabra = buscarTarea2(tareaspendientes, clave, cantidad);
+
+        if (buscadapalabra != NULL)
+        {
+            printf("\ntarea encontrada!!");
+            printf("\ntarea %d", buscadapalabra->tareaID);
+            printf("\ndescripcion: %s", buscadapalabra->descripcion);
+            printf("\nduracion: %d", buscadapalabra->duracion);
+        } else
+        {
+            printf("\nno se encontro la tarea");
+        }
     }
     
-    //buscar por palabra clave
-    char clave[10];
-    tarea *buscadapalabra;
-
-    fflush(stdin);
-    printf("\ningrese la palabra clave: ");
-    gets(clave);
-
-    buscadapalabra = buscarTarea2(tareaspendientes, clave, cantidad);
-
-    if (buscadapalabra != NULL)
-    {
-        printf("\ntarea encontrada!!");
-        printf("\ntarea %d", buscadapalabra->tareaID);
-        printf("\ndescripcion: %s", buscadapalabra->descripcion);
-        printf("\nduracion: %d", buscadapalabra->duracion);
-    } else
-    {
-        printf("\nno se encontro la tarea");
-    }
-
     return 0;
 }
 
