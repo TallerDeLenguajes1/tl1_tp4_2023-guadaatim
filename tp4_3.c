@@ -23,12 +23,13 @@ nodo * crearTarea(tarea *l);
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
 nodo * quitarNodo(nodo * start, int id);
-
+tarea * buscarTareaPalabra(nodo * start, char palabra[]);
+tarea * buscarTareaID(nodo * start, int id);
 
 
 int main(){
 
-    int a, opcion, i = 0;
+    int a, b, opcion, i = 0;
 
     //asigno memoria a las tareas
     tarea *tareas = (tarea *)malloc(sizeof(tarea));
@@ -82,6 +83,34 @@ int main(){
     }
 
     mostrarTareas(&realizadas);
+
+    printf("\n desea buscar una tarea por id o palabra? 1-id, 2-palabra: ");
+    scanf("%d",&b);
+
+    tarea *buscada;
+
+    if (b == 1)
+    {   
+        int id;
+        printf("\ningrese el id: ");
+        scanf("%d",&id);
+        buscada = buscarTareaID(pendientes, id);
+        printf("\ntarea %d", buscada->tareaID);
+        printf("\ndescripcion: %s", buscada->descripcion);
+        printf("\nduracion: %d", buscada->duracion);
+
+    } else
+    {
+        char palabra[10];
+        printf("\ningrese la palabra: ");
+        gets(palabra);
+        buscada = buscarTareaPalabra(pendientes, palabra);
+        printf("\ntarea %d", buscada->tareaID);
+        printf("\ndescripcion: %s", buscada->descripcion);
+        printf("\nduracion: %d", buscada->duracion);
+    }
+    
+    
 
     return 0;
     
@@ -154,4 +183,39 @@ nodo * quitarNodo(nodo * start, int id)
     }
     
     return auxanterior;
+}
+
+tarea * buscarTareaID(nodo * start, int id)
+{
+    nodo *aux = start;
+    tarea *buscado = NULL;
+    
+    while (aux->siguiente != NULL)
+    {
+        if (aux->t->tareaID == id)
+        {
+            buscado = aux->t;
+            break;
+        }
+        aux = aux->siguiente;
+    }
+    
+    return buscado;
+}
+
+tarea * buscarTareaPalabra(nodo * start, char palabra[])
+{
+    nodo *aux = start;
+    tarea *buscado = NULL;
+
+    while (aux->siguiente != NULL)
+    {
+        if (strstr(aux->t->descripcion, palabra) != NULL)
+        {
+            buscado = aux->t;
+            break;
+        }
+    
+        aux = aux->siguiente;
+    }
 }
