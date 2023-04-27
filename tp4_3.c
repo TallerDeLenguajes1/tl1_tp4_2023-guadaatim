@@ -15,16 +15,20 @@ struct nodo{
 }typedef nodo;
 
 nodo * start;
+nodo * pendientes;
+nodo * realizadas;
 
 nodo * crearListaVacia();
 nodo * crearTarea(tarea *l);
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
+nodo * quitarNodo(nodo * start, int id);
+
 
 
 int main(){
 
-    int cantidad;
+    int cantidad, opcion;
 
     printf("\ningrese cuantas tareas debe realizar: ");
     scanf("%d",&cantidad);
@@ -33,7 +37,8 @@ int main(){
     tarea **tareas = (tarea **)malloc(sizeof(tarea *) * cantidad);
 
     //creo "cabecera"
-    start = crearListaVacia();
+    pendientes = crearListaVacia();
+    realizadas = crearListaVacia();
 
     //cargo las tareas
     for (int i = 0; i < cantidad; i++)
@@ -49,14 +54,36 @@ int main(){
         fflush(stdin);
         tareas[i]->duracion = 10 + rand() % 90;
         //inserto nodos
-        insertarTarea(&start, tareas[i]);
+        insertarTarea(&pendientes, tareas[i]);
+        
     }
-    
-    mostrarTareas(&start);
 
-    
+    nodo *aux = (nodo *)malloc(sizeof(nodo));
+    aux = pendientes;
 
-    
+    //mostrar pendientes
+    while (aux != NULL)
+    {
+        printf("\nTarea %d", aux->t->tareaID);
+        printf("\nDescripcion: %s", aux->t->descripcion);
+        printf("\nDuracion: %d", aux->t->duracion);
+
+        printf("\nrealizo la tarea? 1si, 0no: ");
+        scanf("%d",&opcion);
+
+        if (opcion == 1)
+        {   
+            nodo *nodonuevo;
+            nodonuevo = quitarNodo(aux, aux->t->tareaID);
+            insertarTarea(&realizadas, nodonuevo->t);
+        }
+
+        aux = aux->siguiente;
+
+    }
+
+    mostrarTareas(&realizadas);
+
     return 0;
     
 }
@@ -113,4 +140,19 @@ void mostrarTareas(nodo ** start)
 
     }
     
+}
+
+//quitar nodo
+nodo * quitarNodo(nodo * start, int id)
+{
+    nodo * aux = start;
+    nodo * auxanterior = start;
+
+    while (aux != NULL && aux->t->tareaID != id)
+    {
+        auxanterior = aux;
+        aux = aux->siguiente;
+    }
+    
+    return auxanterior;
 }
