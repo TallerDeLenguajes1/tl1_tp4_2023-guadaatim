@@ -14,7 +14,6 @@ struct nodo{
     struct nodo *siguiente;
 }typedef nodo;
 
-nodo * start;
 nodo * pendientes;
 nodo * realizadas;
 
@@ -25,14 +24,12 @@ void mostrarTareas(nodo ** start);
 nodo * quitarNodo(nodo * start, int id);
 tarea * buscarTareaPalabra(nodo * start, char palabra[]);
 tarea * buscarTareaID(nodo * start, int id);
-
+void * eliminarNodo(nodo * start, int id);
 
 int main(){
 
     int a, b, opcion, i = 0;
-
-    //asigno memoria a las tareas
-    tarea *tareas = (tarea *)malloc(sizeof(tarea));
+    tarea *tareas;
 
     //creo "cabecera"
     pendientes = crearListaVacia();
@@ -58,15 +55,15 @@ int main(){
         scanf("%d",&a);
     }
 
-    nodo *aux = (nodo *)malloc(sizeof(nodo));
-    aux = pendientes;
+    nodo *aux1 = (nodo *)malloc(sizeof(nodo));
+    aux1 = pendientes;
 
-    //mostrar pendientes
-    while (aux != NULL)
+    //mostrar pendientes y mover a realizadas
+    while (aux1 != NULL)
     {
-        printf("\nTarea %d", aux->t->tareaID);
-        printf("\nDescripcion: %s", aux->t->descripcion);
-        printf("\nDuracion: %d", aux->t->duracion);
+        printf("\nTarea %d", aux1->t->tareaID);
+        printf("\nDescripcion: %s", aux1->t->descripcion);
+        printf("\nDuracion: %d", aux1->t->duracion);
 
         printf("\nrealizo la tarea? 1si, 0no: ");
         scanf("%d",&opcion);
@@ -74,15 +71,28 @@ int main(){
         if (opcion == 1)
         {   
             nodo *nodonuevo;
-            nodonuevo = quitarNodo(aux, aux->t->tareaID);
+            nodonuevo = quitarNodo(aux1, aux1->t->tareaID);
             insertarTarea(&realizadas, nodonuevo->t);
+            eliminarNodo(aux1, aux1->t->tareaID);
         }
 
-        aux = aux->siguiente;
+        aux1 = aux1->siguiente;
 
     }
 
-    mostrarTareas(&realizadas);
+    pendientes = aux1;
+    
+    if (realizadas != NULL)
+    {
+        printf("\nrealizadas!!!");
+        mostrarTareas(&realizadas);
+    } else
+    {
+        printf("\nno se realizo ninguna tarea");
+    }
+    
+    printf("\npendientes!!!");
+    mostrarTareas(&pendientes);
 
     printf("\n desea buscar una tarea por id o palabra? 1-id, 2-palabra: ");
     scanf("%d",&b);
@@ -95,9 +105,15 @@ int main(){
         printf("\ningrese el id: ");
         scanf("%d",&id);
         buscada = buscarTareaID(pendientes, id);
-        printf("\ntarea %d", buscada->tareaID);
-        printf("\ndescripcion: %s", buscada->descripcion);
-        printf("\nduracion: %d", buscada->duracion);
+        if (buscada != NULL)
+        {
+            printf("\ntarea %d", buscada->tareaID);
+            printf("\ndescripcion: %s", buscada->descripcion);
+            printf("\nduracion: %d", buscada->duracion);
+        } else
+        {
+            printf("\nno se encontro la tarea");
+        }
 
     } else
     {
@@ -105,13 +121,17 @@ int main(){
         printf("\ningrese la palabra: ");
         gets(palabra);
         buscada = buscarTareaPalabra(pendientes, palabra);
-        printf("\ntarea %d", buscada->tareaID);
-        printf("\ndescripcion: %s", buscada->descripcion);
-        printf("\nduracion: %d", buscada->duracion);
+        if (buscada != NULL)
+        {
+            printf("\ntarea %d", buscada->tareaID);
+            printf("\ndescripcion: %s", buscada->descripcion);
+            printf("\nduracion: %d", buscada->duracion);
+        } else
+        {
+            printf("\nno se encontro la tarea");
+        }
     }
     
-    
-
     return 0;
     
 }
@@ -120,17 +140,6 @@ int main(){
 nodo * crearListaVacia()
 {
     return NULL;
-}
-
-int esListaVacia(nodo * lista)
-{
-    if (lista->siguiente == NULL)
-    {
-        return 1;
-    } else
-    {
-        return 0;
-    }
 }
 
 //creo una tarea
@@ -181,10 +190,32 @@ nodo * quitarNodo(nodo * start, int id)
         auxanterior = aux;
         aux = aux->siguiente;
     }
-    
+
     return auxanterior;
 }
 
+//eliminar nodo
+void * eliminarNodo(nodo * start, int id)
+{
+    nodo * aux = start;
+    nodo * auxanterior = start;
+
+    while (aux != NULL && aux->t->tareaID != id)
+    {
+        auxanterior = aux;
+        aux = aux->siguiente;
+    }
+    
+    if (aux)
+    {
+        auxanterior->siguiente = aux->siguiente;
+        free(aux);
+    }
+    
+}
+
+
+//busco con id
 tarea * buscarTareaID(nodo * start, int id)
 {
     nodo *aux = start;
@@ -203,6 +234,7 @@ tarea * buscarTareaID(nodo * start, int id)
     return buscado;
 }
 
+//busco con palabra
 tarea * buscarTareaPalabra(nodo * start, char palabra[])
 {
     nodo *aux = start;
