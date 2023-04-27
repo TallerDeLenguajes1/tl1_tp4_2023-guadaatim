@@ -85,7 +85,7 @@ int main(){
     {    
         //buscar por id
         char clave[10];
-        tarea *buscadaid, *buscadapalabra;
+        tarea *buscadaid;
 
         int identificador = 1;
         tarea *buscadaid;
