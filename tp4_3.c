@@ -28,34 +28,33 @@ nodo * quitarNodo(nodo * start, int id);
 
 int main(){
 
-    int cantidad, opcion;
-
-    printf("\ningrese cuantas tareas debe realizar: ");
-    scanf("%d",&cantidad);
+    int a, opcion, i = 0;
 
     //asigno memoria a las tareas
-    tarea **tareas = (tarea **)malloc(sizeof(tarea *) * cantidad);
+    tarea *tareas = (tarea *)malloc(sizeof(tarea));
 
     //creo "cabecera"
     pendientes = crearListaVacia();
     realizadas = crearListaVacia();
 
-    //cargo las tareas
-    for (int i = 0; i < cantidad; i++)
+    while (a != 0)
     {
-        tareas[i] = (struct Tarea *)malloc(sizeof(struct Tarea) * cantidad); //reserva memoria para la estructura
-        tareas[i]->tareaID = i; 
+        tareas = (struct Tarea *)malloc(sizeof(struct Tarea)); //reserva memoria para la estructura
+        tareas->tareaID = i; 
         fflush(stdin);
         printf("\ningrese una descripcion de la tarea: ");
         char buff[50];
         gets(buff);
-        tareas[i]->descripcion = malloc(sizeof(char) * strlen(buff + 1));
-        strcpy(tareas[i]->descripcion, buff);
+        tareas->descripcion = malloc(sizeof(char) * strlen(buff + 1));
+        strcpy(tareas->descripcion, buff);
         fflush(stdin);
-        tareas[i]->duracion = 10 + rand() % 90;
+        tareas->duracion = 10 + rand() % 90;
         //inserto nodos
-        insertarTarea(&pendientes, tareas[i]);
-        
+        insertarTarea(&pendientes, tareas);
+        i++;
+
+        printf("\ningrese 1 para agregar otra tarea o 0 para terminar: ");
+        scanf("%d",&a);
     }
 
     nodo *aux = (nodo *)malloc(sizeof(nodo));
