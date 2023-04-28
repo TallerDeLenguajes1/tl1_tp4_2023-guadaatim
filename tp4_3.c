@@ -21,14 +21,14 @@ nodo * crearListaVacia();
 nodo * crearTarea(tarea *l);
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
-nodo * quitarNodo(nodo * start, int id);
+nodo * quitarNodo(nodo ** start, int id);
 tarea * buscarTareaPalabra(nodo * start, char palabra[]);
 tarea * buscarTareaID(nodo * start, int id);
-void * eliminarNodo(nodo * start, int id);
+void eliminarNodo(nodo * start, int id);
 
 int main(){
 
-    int a, b, opcion, i = 0;
+    int a = 1, b, opcion;
     tarea *tareas;
 
     //creo "cabecera"
@@ -49,13 +49,11 @@ int main(){
         tareas->duracion = 10 + rand() % 90;
         //inserto nodos
         insertarTarea(&pendientes, tareas);
-        i++;
-
         printf("\ningrese 1 para agregar otra tarea o 0 para terminar: ");
         scanf("%d",&a);
     }
 
-    nodo *aux1 = (nodo *)malloc(sizeof(nodo));
+    nodo *aux1;
     aux1 = pendientes;
 
     //mostrar pendientes y mover a realizadas
@@ -71,16 +69,13 @@ int main(){
         if (opcion == 1)
         {   
             nodo *nodonuevo;
-            nodonuevo = quitarNodo(aux1, aux1->t->tareaID);
+            nodonuevo = quitarNodo(&aux1, aux1->t->tareaID);
             insertarTarea(&realizadas, nodonuevo->t);
-            eliminarNodo(aux1, aux1->t->tareaID);
+            eliminarNodo(pendientes, aux1->t->tareaID);
         }
 
         aux1 = aux1->siguiente;
-
     }
-
-    pendientes = aux1;
     
     if (realizadas != NULL)
     {
@@ -180,55 +175,71 @@ void mostrarTareas(nodo ** start)
 }
 
 //quitar nodo
-nodo * quitarNodo(nodo * start, int id)
+nodo * quitarNodo(nodo ** start, int id)
 {
-    nodo * aux = start;
-    nodo * auxanterior = start;
+    nodo * aux = *start;
+    nodo * auxanterior = *start;
 
     while (aux != NULL && aux->t->tareaID != id)
     {
         auxanterior = aux;
         aux = aux->siguiente;
     }
+
+    if (aux)
+    {
+        if (aux == *start)
+        {
+            *start = aux->siguiente;
+        } else
+        {
+            auxanterior->siguiente = aux->siguiente;
+        }
+        
+        aux->siguiente = NULL;
+        
+    }
+    
 
     return auxanterior;
 }
 
 //eliminar nodo
-void * eliminarNodo(nodo * start, int id)
+void eliminarNodo(nodo * start, int id)
 {
-    nodo * aux = start;
-    nodo * auxanterior = start;
+    nodo * aux;
+    nodo * auxanterior;
 
-    while (aux != NULL && aux->t->tareaID != id)
+    aux = start;
+
+    while (aux && aux->t->tareaID != id)
     {
         auxanterior = aux;
         aux = aux->siguiente;
     }
     
-    if (aux)
+    if (aux != NULL)
     {
         auxanterior->siguiente = aux->siguiente;
         free(aux);
     }
-    
-}
 
+}
 
 //busco con id
 tarea * buscarTareaID(nodo * start, int id)
 {
-    nodo *aux = start;
+    nodo *ayuda = start;
     tarea *buscado = NULL;
     
-    while (aux->siguiente != NULL)
+    while (ayuda != NULL)
     {
-        if (aux->t->tareaID == id)
+        if (ayuda->t->tareaID == id)
         {
-            buscado = aux->t;
+            buscado = ayuda->t;
             break;
         }
-        aux = aux->siguiente;
+        ayuda = ayuda->siguiente;
     }
     
     return buscado;
@@ -240,7 +251,7 @@ tarea * buscarTareaPalabra(nodo * start, char palabra[])
     nodo *aux = start;
     tarea *buscado = NULL;
 
-    while (aux->siguiente != NULL)
+    while (aux != NULL)
     {
         if (strstr(aux->t->descripcion, palabra) != NULL)
         {
