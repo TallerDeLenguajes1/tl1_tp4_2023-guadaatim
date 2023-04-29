@@ -24,11 +24,11 @@ void mostrarTareas(nodo ** start);
 nodo * quitarNodo(nodo ** start, int id);
 tarea * buscarTareaPalabra(nodo * start, char palabra[]);
 tarea * buscarTareaID(nodo * start, int id);
-void eliminarNodo(nodo * start, int id);
+void eliminarNodo(nodo ** start, nodo * nodoeliminar);
 
 int main(){
 
-    int a = 1, b, opcion;
+    int a = 1, b, opcion, i = 0;
     tarea *tareas;
 
     //creo "cabecera"
@@ -51,6 +51,7 @@ int main(){
         insertarTarea(&pendientes, tareas);
         printf("\ningrese 1 para agregar otra tarea o 0 para terminar: ");
         scanf("%d",&a);
+        i++;
     }
 
     nodo *aux1;
@@ -69,9 +70,10 @@ int main(){
         if (opcion == 1)
         {   
             nodo *nodonuevo;
+            printf("\nid antes de quitar nodos: %d", aux1->t->tareaID);
             nodonuevo = quitarNodo(&aux1, aux1->t->tareaID);
             insertarTarea(&realizadas, nodonuevo->t);
-            eliminarNodo(pendientes, aux1->t->tareaID);
+            //eliminarNodo(&pendientes, nodonuevo);
         }
 
         aux1 = aux1->siguiente;
@@ -200,19 +202,19 @@ nodo * quitarNodo(nodo ** start, int id)
         
     }
     
+    return aux;
 
-    return auxanterior;
 }
 
 //eliminar nodo
-void eliminarNodo(nodo * start, int id)
+void eliminarNodo(nodo ** start, nodo * nodoeliminar)
 {
     nodo * aux;
     nodo * auxanterior;
 
-    aux = start;
+    aux = *start;
 
-    while (aux && aux->t->tareaID != id)
+    while (aux && aux->t->tareaID != nodoeliminar->t->tareaID)
     {
         auxanterior = aux;
         aux = aux->siguiente;
@@ -221,6 +223,8 @@ void eliminarNodo(nodo * start, int id)
     if (aux != NULL)
     {
         auxanterior->siguiente = aux->siguiente;
+        //free(aux->t->descripcion);
+        free(aux->t);
         free(aux);
     }
 
