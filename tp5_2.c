@@ -17,7 +17,7 @@ struct nodo{
 
 nodo * crearListaVacia();
 nodo * crearTarea(tarea *l);
-tarea * cargarTarea(tarea *t);
+tarea * cargarTarea(tarea *t, int i);
 void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso);
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
@@ -41,10 +41,14 @@ int main(){
 
     while (a != 0)
     {
-        insertarTarea(&pendientes, cargarTarea(tareas));
-        printf("\ningrese 1 para seguir o 0 para terminar");
+        insertarTarea(&pendientes, cargarTarea(tareas, i));
+        printf("\ningrese 1 para seguir o 0 para terminar: ");
         scanf("%d",&a);
+        i++;
     }
+
+
+    menu(&pendientes, &realizadas, &tareasenproceso);
 
     nodo *aux1 = pendientes;
     nodo **aux2 = &pendientes;
@@ -116,9 +120,8 @@ int main(){
     
 }
 
-tarea * cargarTarea(tarea *t)
+tarea * cargarTarea(tarea *t, int i)
 {
-    int i = 0;
 
     t = (struct Tarea *)malloc(sizeof(struct Tarea)); //reserva memoria para la estructura
     t->tareaID = i; 
@@ -130,7 +133,6 @@ tarea * cargarTarea(tarea *t)
     strcpy(t->descripcion, buff);
     fflush(stdin);
     t->duracion = 10 + rand() % 90;
-    i++;
 
 }
 
@@ -153,79 +155,100 @@ nodo * crearTarea(tarea *l)
 
 void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso)
 {
-    int opcion;
+    int opcion, seguir = 1;
+    int listatarea, idlista;
     int mostrar;
     int eliminar, ideliminar;
-    nodo * tareaseliminadas;
+    int mover;
+    nodo * tareaseleccionada;
     nodo * nodoquitado;
     
-    tareaseliminadas = crearListaVacia();
+    tareaseleccionada= crearListaVacia();
 
-    printf("\n-------MENU-------\n");
-    printf("\ningrese una opcion: ");
-    printf("\n1 - Mostrar Tareas");
-    printf("\n2 - Eliminar Tareas");
-    printf("\n3 - Mover tareas");
-    printf("\n4 - Salir");
-    scanf("%d",&opcion);
-
-    switch (opcion)
+    while (seguir != 0)
     {
-    case 1:
-        printf("\ningrese que tareas desea mostrar: ");
+        printf("\n-------LISTA DE TAREAS-------");
+        printf("\n-------Tareas Pendientes-------");
+        mostrarTareas(pendientes);
+        printf("\n-------Tareas En Proceso-------");
+        mostrarTareas(enproceso);  
+        printf("\n-------Tareas Realizadas-------");
+        mostrarTareas(realizadas);
+
+        printf("\nSeleccione la lista donde se encuentra la tarea que desea seleccionar y su id: ");
         printf("\n1 - Tareas Pendientes");
         printf("\n2 - Tareas En Proceso");
         printf("\n3 - Tareas Realizadas");
-        scanf("%d",&mostrar);
+        printf("\nLista de tareas: ");
+        scanf("%d",&listatarea);
+        printf("\nId: ");
+        scanf("%d",&idlista);
 
-        switch (mostrar)
+        switch (listatarea)
         {
         case 1:
-            mostrarTareas(pendientes);
+            tareaseleccionada = quitarTarea(pendientes, idlista);
             break;
         case 2:
-            mostrarTareas(enproceso);
+            tareaseleccionada = quitarTarea(enproceso, idlista);
             break;
         case 3:
-            mostrarTareas(realizadas);
+            tareaseleccionada = quitarTarea(realizadas, idlista);
             break;
+
         default:
             break;
         }
 
-        break;
-    case 2:
-        printf("\ningrese que tarea desea eliminar y su id: ");
-        printf("\n1 - Tareas Pendientes");
-        printf("\n2 - Tareas En Proceso");
-        printf("\n3 - Tareas Realizadas");
-        scanf("%d",&eliminar);
-        printf("\nid: ");
-        scanf("%d",&ideliminar);
-        switch (eliminar)
+        printf("\nAhora seleccione lo que desea realizar con esa tarea: ");
+        printf("\n1 - Mover tarea");
+        printf("\n2 - Eliminar Tarea");
+        printf("\n3 - Nada");
+        scanf("%d",&opcion);
+
+        switch (opcion)
         {
         case 1:
-            nodoquitado = quitarTarea(&pendientes, ideliminar);
-            insertarTarea(&tareaseliminadas, nodoquitado->t);
+            printf("\n1 - Mover Tarea a Tareas Pendientes");
+            printf("\n2 - Mover Tarea a Tareas En Proceso");
+            printf("\n3 - Mover Tarea a Tareas Realizadas");
+            scanf("%d",&mover);
+
+            switch (mover)
+            {
+            case 1:
+                insertarTarea(pendientes, tareaseleccionada->t);
+                break;
+            case 2:
+                insertarTarea(enproceso, tareaseleccionada->t);
+                break;
+            case 3:
+                insertarTarea(realizadas, tareaseleccionada->t);
+                break;
+
+            default:
+                break;
+            }
             break;
         case 2:
-            nodoquitado = quitarTarea(&realizadas, ideliminar);
-            insertarTarea(&tareaseliminadas, nodoquitado->t);
-            break;
-        case 3:
-            nodoquitado = quitarTarea(&enproceso, ideliminar);
-            insertarTarea(&tareaseliminadas, nodoquitado->t);
-            break;
-        
+            eliminarTareas(tareaseleccionada);
         default:
             break;
-        }
-    
-    default:
-        break;
+        }   
+
+        printf("\n1 - Volver al menu");
+        printf("\n0 - Salir");
+        printf("\nIngrese su eleccion: ");
+        scanf("%d",&seguir);
+
     }
 
-
+    printf("\n-------PENDIENTES-------");
+    mostrarDatos(pendientes);
+    printf("\n-------EN PROCESO-------");
+    mostrarDatos(enproceso);
+    printf("\n-------REALIZADAS-------");
+    mostrarDatos(realizadas);
 
 }
 
@@ -308,15 +331,12 @@ nodo * quitarTarea(nodo ** start, int id)
 
 
 //eliminar nodo
-/*void * eliminarTarea(nodo ** start, int id)
+void * eliminarTareas(nodo * nodoeliminar)
 {
-    //free(nodoeliminar->t->descripcion);
-    nodo * nodoeliminar = (nodo*)malloc(sizeof(nodo)); 
-    nodoeliminar = quitarTarea(start, id);
+    free(nodoeliminar->t->descripcion);
     free(nodoeliminar->t);
     free(nodoeliminar);
-    
-}*/
+}
 
 
 //busco con id
