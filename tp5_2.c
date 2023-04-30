@@ -21,6 +21,7 @@ tarea * cargarTarea(tarea *t, int i);
 void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso);
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
+void mostrarDatos(nodo ** start);
 nodo * quitarTarea(nodo ** start, int id);
 tarea * buscarTareaPalabra(nodo * start, char palabra[]);
 tarea * buscarTareaID(nodo * start, int id);
@@ -74,7 +75,7 @@ int main(){
 
         aux1 = aux1->siguiente;
 
-    }*/
+    }
 
     pendientes = *aux2;
 
@@ -114,7 +115,7 @@ int main(){
         {
             printf("\nno se encontro la tarea");
         }
-    }
+    }*/
     
     return 0;
     
@@ -204,6 +205,7 @@ void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso)
         printf("\n1 - Mover tarea");
         printf("\n2 - Eliminar Tarea");
         printf("\n3 - Nada");
+        printf("\nIngrese su eleccion: ");
         scanf("%d",&opcion);
 
         switch (opcion)
