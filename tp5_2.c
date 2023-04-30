@@ -15,15 +15,14 @@ struct nodo{
 }typedef nodo;
 
 
-
 nodo * crearListaVacia();
 nodo * crearTarea(tarea *l);
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
-nodo * quitarNodo(nodo ** start, int id);
+nodo * quitarTarea(nodo ** start, int id);
 tarea * buscarTareaPalabra(nodo * start, char palabra[]);
 tarea * buscarTareaID(nodo * start, int id);
-void * eliminarNodo(nodo * nodoeliminar);
+void * eliminarTareas(nodo * nodoeliminar);
 
 int main(){
 
@@ -73,7 +72,7 @@ int main(){
         if (opcion == 1)
         {   
             nodo *nodonuevo;
-            nodonuevo = quitarNodo(aux2, aux1->t->tareaID);
+            nodonuevo = quitarTarea(aux2, aux1->t->tareaID);
             insertarTarea(&realizadas, nodonuevo->t);
             //eliminarNodo(nodonuevo);
         }
@@ -182,8 +181,27 @@ void mostrarTareas(nodo ** start)
     
 }
 
+void mostrarDatos(nodo ** start)
+{
+    nodo *aux;
+    aux = *start;
+    int totalduracion = 0;
+    int totaltareas = 0;
+
+    while (aux != NULL)
+    {
+        totaltareas++;
+        totalduracion += aux->t->duracion;
+
+        aux = aux->siguiente;   
+    }
+
+    printf("\nTotal de tareas: %d", totaltareas);
+    printf("\nDuracion total de tareas: %d", totalduracion);
+}
+
 //quitar nodo
-nodo * quitarNodo(nodo ** start, int id)
+nodo * quitarTarea(nodo ** start, int id)
 {
     nodo * aux = *start;
     nodo * auxanterior = *start;
@@ -210,7 +228,7 @@ nodo * quitarNodo(nodo ** start, int id)
 
 
 //eliminar nodo
-/*void * eliminarNodo(nodo * nodoeliminar)
+/*void * eliminarTarea(nodo * nodoeliminar)
 {
     //free(nodoeliminar->t->descripcion);
     free(nodoeliminar->t);
