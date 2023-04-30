@@ -17,6 +17,8 @@ struct nodo{
 
 nodo * crearListaVacia();
 nodo * crearTarea(tarea *l);
+tarea * cargarTarea(tarea *t);
+void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso);
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
 nodo * quitarTarea(nodo ** start, int id);
@@ -35,24 +37,12 @@ int main(){
     //creo "cabecera"
     pendientes = crearListaVacia();
     realizadas = crearListaVacia();
+    tareasenproceso = crearListaVacia();
 
     while (a != 0)
     {
-        tareas = (struct Tarea *)malloc(sizeof(struct Tarea)); //reserva memoria para la estructura
-        tareas->tareaID = i; 
-        fflush(stdin);
-        printf("\ningrese una descripcion de la tarea: ");
-        char buff[50];
-        gets(buff);
-        tareas->descripcion = malloc(sizeof(char) * strlen(buff + 1));
-        strcpy(tareas->descripcion, buff);
-        fflush(stdin);
-        tareas->duracion = 10 + rand() % 90;
-        //inserto nodos
-        insertarTarea(&pendientes, tareas);
-        i++;
-
-        printf("\ningrese 1 para agregar otra tarea o 0 para terminar: ");
+        insertarTarea(&pendientes, cargarTarea(tareas));
+        printf("\ningrese 1 para seguir o 0 para terminar");
         scanf("%d",&a);
     }
 
@@ -60,7 +50,8 @@ int main(){
     nodo **aux2 = &pendientes;
 
     //mostrar pendientes y mover a realizadas
-    while (aux1 != NULL)
+
+    /*while (aux1 != NULL)
     {
         printf("\nTarea %d", aux1->t->tareaID);
         printf("\nDescripcion: %s", aux1->t->descripcion);
@@ -74,26 +65,14 @@ int main(){
             nodo *nodonuevo;
             nodonuevo = quitarTarea(aux2, aux1->t->tareaID);
             insertarTarea(&realizadas, nodonuevo->t);
-            //eliminarNodo(nodonuevo);
+            eliminarTareas(nodonuevo);
         }
 
         aux1 = aux1->siguiente;
 
-    }
+    }*/
 
     pendientes = *aux2;
-    
-    if (realizadas != NULL)
-    {
-        printf("\nrealizadas!!!\n");
-        mostrarTareas(&realizadas);
-    } else
-    {
-        printf("\nno se realizo ninguna tarea");
-    }
-    
-    printf("\npendientes!!!");
-    mostrarTareas(&pendientes);
 
     printf("\n desea buscar una tarea por id o palabra? 1-id, 2-palabra: ");
     scanf("%d",&b);
@@ -137,6 +116,24 @@ int main(){
     
 }
 
+tarea * cargarTarea(tarea *t)
+{
+    int i = 0;
+
+    t = (struct Tarea *)malloc(sizeof(struct Tarea)); //reserva memoria para la estructura
+    t->tareaID = i; 
+    fflush(stdin);
+    printf("\ningrese una descripcion de la tarea: ");
+    char buff[50];
+    gets(buff);
+    t->descripcion = malloc(sizeof(char) * strlen(buff + 1));
+    strcpy(t->descripcion, buff);
+    fflush(stdin);
+    t->duracion = 10 + rand() % 90;
+    i++;
+
+}
+
 //creo la lista vacia
 nodo * crearListaVacia()
 {
@@ -154,6 +151,84 @@ nodo * crearTarea(tarea *l)
     return aux;
 }
 
+void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso)
+{
+    int opcion;
+    int mostrar;
+    int eliminar, ideliminar;
+    nodo * tareaseliminadas;
+    nodo * nodoquitado;
+    
+    tareaseliminadas = crearListaVacia();
+
+    printf("\n-------MENU-------\n");
+    printf("\ningrese una opcion: ");
+    printf("\n1 - Mostrar Tareas");
+    printf("\n2 - Eliminar Tareas");
+    printf("\n3 - Mover tareas");
+    printf("\n4 - Salir");
+    scanf("%d",&opcion);
+
+    switch (opcion)
+    {
+    case 1:
+        printf("\ningrese que tareas desea mostrar: ");
+        printf("\n1 - Tareas Pendientes");
+        printf("\n2 - Tareas En Proceso");
+        printf("\n3 - Tareas Realizadas");
+        scanf("%d",&mostrar);
+
+        switch (mostrar)
+        {
+        case 1:
+            mostrarTareas(pendientes);
+            break;
+        case 2:
+            mostrarTareas(enproceso);
+            break;
+        case 3:
+            mostrarTareas(realizadas);
+            break;
+        default:
+            break;
+        }
+
+        break;
+    case 2:
+        printf("\ningrese que tarea desea eliminar y su id: ");
+        printf("\n1 - Tareas Pendientes");
+        printf("\n2 - Tareas En Proceso");
+        printf("\n3 - Tareas Realizadas");
+        scanf("%d",&eliminar);
+        printf("\nid: ");
+        scanf("%d",&ideliminar);
+        switch (eliminar)
+        {
+        case 1:
+            nodoquitado = quitarTarea(&pendientes, ideliminar);
+            insertarTarea(&tareaseliminadas, nodoquitado->t);
+            break;
+        case 2:
+            nodoquitado = quitarTarea(&realizadas, ideliminar);
+            insertarTarea(&tareaseliminadas, nodoquitado->t);
+            break;
+        case 3:
+            nodoquitado = quitarTarea(&enproceso, ideliminar);
+            insertarTarea(&tareaseliminadas, nodoquitado->t);
+            break;
+        
+        default:
+            break;
+        }
+    
+    default:
+        break;
+    }
+
+
+
+}
+
 //agrego tareas
 void insertarTarea(nodo ** start, tarea *tarea)
 {
@@ -168,15 +243,20 @@ void mostrarTareas(nodo ** start)
     nodo *aux = (nodo *)malloc(sizeof(nodo));
     aux = *start;
 
-    while (aux != NULL)
+    if (aux != NULL)
     {
-        printf("\nTarea %d", aux->t->tareaID);
-        printf("\nDescripcion: %s", aux->t->descripcion);
-        printf("\nDuracion: %d", aux->t->duracion);
-        printf("\n");
+        while (aux != NULL)
+        {
+            printf("\nTarea %d", aux->t->tareaID);
+            printf("\nDescripcion: %s", aux->t->descripcion);
+            printf("\nDuracion: %d", aux->t->duracion);
+            printf("\n");
 
-        aux = aux->siguiente;
-
+            aux = aux->siguiente;
+        }
+    } else
+    {
+        printf("\nLa lista de tareas esta vacia");
     }
     
 }
@@ -228,9 +308,11 @@ nodo * quitarTarea(nodo ** start, int id)
 
 
 //eliminar nodo
-/*void * eliminarTarea(nodo * nodoeliminar)
+/*void * eliminarTarea(nodo ** start, int id)
 {
     //free(nodoeliminar->t->descripcion);
+    nodo * nodoeliminar = (nodo*)malloc(sizeof(nodo)); 
+    nodoeliminar = quitarTarea(start, id);
     free(nodoeliminar->t);
     free(nodoeliminar);
     
