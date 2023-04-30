@@ -19,17 +19,19 @@ nodo * crearListaVacia();
 nodo * crearTarea(tarea *l);
 tarea * cargarTarea(tarea *t, int i);
 void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso);
+int seleccionLista();
 void insertarTarea(nodo ** start, tarea *tarea);
 void mostrarTareas(nodo ** start);
 void mostrarDatos(nodo ** start);
 nodo * quitarTarea(nodo ** start, int id);
-tarea * buscarTareaPalabra(nodo * start, char palabra[]);
-tarea * buscarTareaID(nodo * start, int id);
+void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas);
+tarea * buscarTareaPalabra(nodo ** start, char palabra[]);
+tarea * buscarTareaID(nodo ** start, int id);
 void * eliminarTareas(nodo * nodoeliminar);
 
 int main(){
 
-    int a = 1, b, opcion, i = 0;
+    int a = 1, i = 0, b;
     tarea *tareas;
     nodo * pendientes;
     nodo * realizadas;
@@ -51,6 +53,17 @@ int main(){
 
     menu(&pendientes, &realizadas, &tareasenproceso);
 
+    fflush(stdin);
+    printf("\nDesea buscar una tarea?");
+    printf("\n1 - Si");
+    printf("\n 2- No");
+    scanf("%d",&b);
+
+    if (b == 1)
+    {
+        buscador(&pendientes, &tareasenproceso, &realizadas);
+    }
+
     printf("\n-------PENDIENTES-------");
     mostrarDatos(&pendientes);
     printf("\n-------EN PROCESO-------");
@@ -59,12 +72,10 @@ int main(){
     mostrarDatos(&realizadas);
 
     return 0;
-    
 }
 
 tarea * cargarTarea(tarea *t, int i)
 {
-
     t = (struct Tarea *)malloc(sizeof(struct Tarea)); //reserva memoria para la estructura
     t->tareaID = i; 
     fflush(stdin);
@@ -74,8 +85,9 @@ tarea * cargarTarea(tarea *t, int i)
     t->descripcion = malloc(sizeof(char) * strlen(buff + 1));
     strcpy(t->descripcion, buff);
     fflush(stdin);
-    t->duracion = 10 + rand() % 90;
+    t->duracion = 10 + rand() % 90; 
 
+    return t;
 }
 
 //creo la lista vacia
@@ -170,35 +182,15 @@ void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso)
             break;
         case 2:
             eliminarTareas(tareaseleccionada);
-        default:
-                switch (listatarea)
-                {
-                case 1:
-                    insertarTarea(pendientes, tareaseleccionada->t);
-                    break;
-                case 2:
-                    insertarTarea(enproceso, tareaseleccionada->t);
-                    break;
-                case 3:
-                    insertarTarea(realizadas, tareaseleccionada->t);
-                    break;
-                default:
-                    break;
-                }
+        default:     
             break;
         }   
 
         printf("\n0 - Salir");
         printf("\n1 - Volver al menu");
-        printf("\n2 - Buscar una tarea");
         printf("\nIngrese su eleccion: ");
         scanf("%d",&seguir);
 
-        if (seguir == 2)
-        {
-            buscador(pendientes, enproceso, realizadas);
-        }
-        
     }
 
 }
@@ -336,7 +328,10 @@ void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas)
             }
             if (buscada != NULL)
             {
-                mostrarTareas(buscada);
+                printf("\n-------TAREA ENCONTRADA-------");
+                printf("\nTarea id: %d", buscada->tareaID);
+                printf("\nDescripcion: %s", buscada->descripcion);
+                printf("\nDuracion: %d", buscada->duracion);
             } else
             {
                 printf("\nno se encontro la tarea");
@@ -344,6 +339,8 @@ void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas)
             
         } else
         {
+
+            fflush(stdin);
             char palabra[10];
             printf("\ningrese la palabra: ");
             gets(palabra);
@@ -363,7 +360,10 @@ void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas)
             }
             if (buscada != NULL)
             {
-                mostrarTareas(buscada);
+                printf("\n-------TAREA ENCONTRADA-------");
+                printf("\nTarea id: %d", buscada->tareaID);
+                printf("\nDescripcion: %s", buscada->descripcion);
+                printf("\nDuracion: %d", buscada->duracion);
             } else
             {
                 printf("\nno se encontro la tarea");
@@ -372,12 +372,10 @@ void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas)
 
 }
 
-
-
 //busco con id
-tarea * buscarTareaID(nodo * start, int id)
+tarea * buscarTareaID(nodo ** start, int id)
 {
-    nodo *aux = start;
+    nodo *aux = *start;
     tarea *buscado = NULL;
     
     while (aux->siguiente != NULL)
@@ -394,9 +392,9 @@ tarea * buscarTareaID(nodo * start, int id)
 }
 
 //busco con palabra
-tarea * buscarTareaPalabra(nodo * start, char palabra[])
+tarea * buscarTareaPalabra(nodo ** start, char palabra[])
 {
-    nodo *aux = start;
+    nodo *aux = *start;
     tarea *buscado = NULL;
 
     while (aux->siguiente != NULL)
