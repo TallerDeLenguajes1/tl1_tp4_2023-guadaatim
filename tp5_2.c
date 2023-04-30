@@ -51,72 +51,13 @@ int main(){
 
     menu(&pendientes, &realizadas, &tareasenproceso);
 
-    nodo *aux1 = pendientes;
-    nodo **aux2 = &pendientes;
+    printf("\n-------PENDIENTES-------");
+    mostrarDatos(&pendientes);
+    printf("\n-------EN PROCESO-------");
+    mostrarDatos(&tareasenproceso);
+    printf("\n-------REALIZADAS-------");
+    mostrarDatos(&realizadas);
 
-    //mostrar pendientes y mover a realizadas
-
-    /*while (aux1 != NULL)
-    {
-        printf("\nTarea %d", aux1->t->tareaID);
-        printf("\nDescripcion: %s", aux1->t->descripcion);
-        printf("\nDuracion: %d", aux1->t->duracion);
-
-        printf("\nrealizo la tarea? 1si, 0no: ");
-        scanf("%d",&opcion);
-
-        if (opcion == 1)
-        {   
-            nodo *nodonuevo;
-            nodonuevo = quitarTarea(aux2, aux1->t->tareaID);
-            insertarTarea(&realizadas, nodonuevo->t);
-            eliminarTareas(nodonuevo);
-        }
-
-        aux1 = aux1->siguiente;
-
-    }
-
-    pendientes = *aux2;
-
-    printf("\n desea buscar una tarea por id o palabra? 1-id, 2-palabra: ");
-    scanf("%d",&b);
-
-    tarea *buscada;
-
-    if (b == 1)
-    {   
-        int id;
-        printf("\ningrese el id: ");
-        scanf("%d",&id);
-        buscada = buscarTareaID(pendientes, id);
-        if (buscada != NULL)
-        {
-            printf("\ntarea %d", buscada->tareaID);
-            printf("\ndescripcion: %s", buscada->descripcion);
-            printf("\nduracion: %d", buscada->duracion);
-        } else
-        {
-            printf("\nno se encontro la tarea");
-        }
-
-    } else
-    {
-        char palabra[10];
-        printf("\ningrese la palabra: ");
-        gets(palabra);
-        buscada = buscarTareaPalabra(pendientes, palabra);
-        if (buscada != NULL)
-        {
-            printf("\ntarea %d", buscada->tareaID);
-            printf("\ndescripcion: %s", buscada->descripcion);
-            printf("\nduracion: %d", buscada->duracion);
-        } else
-        {
-            printf("\nno se encontro la tarea");
-        }
-    }*/
-    
     return 0;
     
 }
@@ -176,12 +117,7 @@ void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso)
         printf("\n-------Tareas Realizadas-------");
         mostrarTareas(realizadas);
 
-        printf("\nSeleccione la lista donde se encuentra la tarea que desea seleccionar y su id: ");
-        printf("\n1 - Tareas Pendientes");
-        printf("\n2 - Tareas En Proceso");
-        printf("\n3 - Tareas Realizadas");
-        printf("\nLista de tareas: ");
-        scanf("%d",&listatarea);
+        listatarea = seleccionLista();
         printf("\nId: ");
         scanf("%d",&idlista);
 
@@ -235,23 +171,51 @@ void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso)
         case 2:
             eliminarTareas(tareaseleccionada);
         default:
+                switch (listatarea)
+                {
+                case 1:
+                    insertarTarea(pendientes, tareaseleccionada->t);
+                    break;
+                case 2:
+                    insertarTarea(enproceso, tareaseleccionada->t);
+                    break;
+                case 3:
+                    insertarTarea(realizadas, tareaseleccionada->t);
+                    break;
+                default:
+                    break;
+                }
             break;
         }   
 
-        printf("\n1 - Volver al menu");
         printf("\n0 - Salir");
+        printf("\n1 - Volver al menu");
+        printf("\n2 - Buscar una tarea");
         printf("\nIngrese su eleccion: ");
         scanf("%d",&seguir);
 
+        if (seguir == 2)
+        {
+            buscador(pendientes, enproceso, realizadas);
+        }
+        
     }
 
-    printf("\n-------PENDIENTES-------");
-    mostrarDatos(pendientes);
-    printf("\n-------EN PROCESO-------");
-    mostrarDatos(enproceso);
-    printf("\n-------REALIZADAS-------");
-    mostrarDatos(realizadas);
+}
 
+//seleccion de lista
+int seleccionLista()
+{   
+    int eleccion;
+
+    printf("\nSeleccione la lista donde se encuentra la tarea: ");
+    printf("\n1 - Tareas Pendientes");
+    printf("\n2 - Tareas En Proceso");
+    printf("\n3 - Tareas Realizadas");
+    printf("\nLista de tareas: ");
+    scanf("%d",&eleccion);
+    
+    return eleccion;
 }
 
 //agrego tareas
@@ -331,7 +295,6 @@ nodo * quitarTarea(nodo ** start, int id)
     return aux;
 }
 
-
 //eliminar nodo
 void * eliminarTareas(nodo * nodoeliminar)
 {
@@ -339,6 +302,76 @@ void * eliminarTareas(nodo * nodoeliminar)
     free(nodoeliminar->t);
     free(nodoeliminar);
 }
+
+void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas)
+{
+    int b, elegir;
+    tarea *buscada;
+
+    printf("\nDesea buscar una tarea por id o palabra? 1-id, 2-palabra: ");
+    printf("\n1 - ID");
+    printf("\n2 - Palabra");
+    scanf("%d",&b);
+
+    elegir = seleccionLista();
+
+        if (b == 1)
+        {         
+            int id;
+            printf("\ningrese el id: ");
+            scanf("%d",&id);
+            switch (elegir)
+            {
+            case 1:
+                buscada = buscarTareaID(pendientes, id);
+                break;
+            case 2:
+                buscada = buscarTareaID(enproceso, id);
+                break;
+            case 3:
+                buscada = buscarTareaID(realizadas, id);
+                break;
+            default:
+                break;
+            }
+            if (buscada != NULL)
+            {
+                mostrarTareas(buscada);
+            } else
+            {
+                printf("\nno se encontro la tarea");
+            }
+            
+        } else
+        {
+            char palabra[10];
+            printf("\ningrese la palabra: ");
+            gets(palabra);
+            switch (elegir)
+            {
+            case 1:
+                buscada = buscarTareaPalabra(pendientes, palabra);
+                break;
+            case 2:
+                buscada = buscarTareaPalabra(enproceso, palabra);
+                break;
+            case 3:
+                buscada = buscarTareaPalabra(realizadas, palabra);
+                break;
+            default:
+                break;
+            }
+            if (buscada != NULL)
+            {
+                mostrarTareas(buscada);
+            } else
+            {
+                printf("\nno se encontro la tarea");
+            }
+        }
+
+}
+
 
 
 //busco con id
