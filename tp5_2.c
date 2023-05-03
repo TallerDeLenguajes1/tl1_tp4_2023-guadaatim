@@ -57,6 +57,7 @@ int main(){
     printf("\nDesea buscar una tarea?");
     printf("\n1 - Si");
     printf("\n 2- No");
+    printf("\nIngrese su eleccion: ");
     scanf("%d",&b);
 
     if (b == 1)
@@ -162,6 +163,7 @@ void menu(nodo ** pendientes, nodo ** realizadas, nodo ** enproceso)
             printf("\n1 - Mover Tarea a Tareas Pendientes");
             printf("\n2 - Mover Tarea a Tareas En Proceso");
             printf("\n3 - Mover Tarea a Tareas Realizadas");
+            printf("\nIngrese su eleccion: ");
             scanf("%d",&mover);
 
             switch (mover)
@@ -283,6 +285,8 @@ nodo * quitarTarea(nodo ** start, int id)
             auxanterior->siguiente = aux->siguiente;
         }
     }
+
+    aux->siguiente = NULL;
     
     return aux;
 }
@@ -303,6 +307,7 @@ void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas)
     printf("\nDesea buscar una tarea por id o palabra? 1-id, 2-palabra: ");
     printf("\n1 - ID");
     printf("\n2 - Palabra");
+    printf("\nIngrese su eleccion: ");
     scanf("%d",&b);
 
     elegir = seleccionLista();
