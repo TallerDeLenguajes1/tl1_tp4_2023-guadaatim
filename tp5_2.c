@@ -27,7 +27,7 @@ nodo * quitarTarea(nodo ** start, int id);
 void buscador(nodo ** pendientes, nodo ** enproceso, nodo ** realizadas);
 tarea * buscarTareaPalabra(nodo ** start, char palabra[]);
 tarea * buscarTareaID(nodo ** start, int id);
-void * eliminarTareas(nodo * nodoeliminar);
+void eliminarTareas(nodo * nodoeliminar);
 
 int main(){
 
@@ -288,7 +288,7 @@ nodo * quitarTarea(nodo ** start, int id)
 }
 
 //eliminar nodo
-void * eliminarTareas(nodo * nodoeliminar)
+void eliminarTareas(nodo * nodoeliminar)
 {
     free(nodoeliminar->t->descripcion);
     free(nodoeliminar->t);
